@@ -55,7 +55,7 @@ boolean connectToWifi() {
   WiFi.forceSleepWake();
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  unsigned int retries = 100;
+  unsigned int retries = 1000;
   while (WiFi.status() != WL_CONNECTED && (retries-- > 0)) {
     Serial.print(".");
     delay(500);
