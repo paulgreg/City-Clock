@@ -10,9 +10,10 @@
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
 
+
 int pins[] = {5, 4, 15}; // the pins you'll be using
 int pinCount = 3;
-int nodes = 4; // the number of LEDs
+int LEDs = 4; // the number of LEDs
 ChuckPlex plex = ChuckPlex(pins,pinCount);
 
 void setup() {
@@ -20,7 +21,7 @@ void setup() {
   while (!Serial);
   Serial.println("City Clock");
 
-  if (DEBUG) plex.displayConnections(nodes);
+  if (DEBUG) plex.displayConnections(LEDs);
   
   if (connectToWifi()) {
     timeClient.begin();
@@ -55,14 +56,12 @@ boolean connectToWifi() {
   WiFi.forceSleepWake();
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  unsigned int retries = 1000;
-  while (WiFi.status() != WL_CONNECTED && (retries-- > 0)) {
+  unsigned int retries = 0;
+  while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
+    plex.clear();
+    plex.enable((retries++ % LEDs) + 1);
     delay(500);
-  }
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("\nWifi connection failed");
-    return false;
   }
   Serial.println("");
   Serial.println("wifi connected");
