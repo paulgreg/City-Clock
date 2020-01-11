@@ -10,10 +10,10 @@
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
 
+int pins[] = { 5, 4, 14, 12, 13 }; // the pins you'll be using
+int pinCount = 5;
+int LEDs = 13; // the number of LEDs
 
-int pins[] = {5, 4, 15}; // the pins you'll be using
-int pinCount = 3;
-int LEDs = 4; // the number of LEDs
 ChuckPlex plex = ChuckPlex(pins,pinCount);
 
 void setup() {
@@ -22,27 +22,65 @@ void setup() {
   Serial.println("City Clock");
 
   if (DEBUG) plex.displayConnections(LEDs);
-  
+
+  for (int i = 1; i < 14; i++) {
+    Serial.print("Testing LED # ");
+    Serial.println(i);
+    plex.enable(i);
+    delay(500);
+  }
+  plex.clear();
+
   if (connectToWifi()) {
     timeClient.begin();
   }
 }
 
+unsigned int c = 0;
+unsigned int hours1, hours2;
+unsigned int minutes1, minutes2;  
+
 void loop() {
-  timeClient.update();
-  if (DEBUG) Serial.println(timeClient.getFormattedTime());
-
-  int led = timeClient.getSeconds() % 4;
-
-  if (DEBUG) {
-    Serial.print("enabling ");
-    Serial.println(led);
+  if (c++ % 10000 == 0) {
+    timeClient.update();
+  
+    int hours = timeClient.getHours();
+    hours1 = hours / 10;
+    hours2 = hours % 10;
+    
+    int minutes = timeClient.getMinutes();
+    minutes1 = minutes / 10;
+    minutes2 = minutes % 10;
+  
+    if (DEBUG) {
+      Serial.print(hours);
+      Serial.print(":");
+      Serial.print(minutes);
+      Serial.print(":");
+      Serial.println(timeClient.getSeconds());
+    }
   }
 
-  plex.clear();
-  plex.enable(led + 1);
-  
-  delay(1000);
+  turnLedOn(1, hours1 & 1);
+  turnLedOn(2, hours1 & 2);
+
+  turnLedOn(3, hours2 & 1);
+  turnLedOn(4, hours2 & 2);
+  turnLedOn(5, hours2 & 4);
+  turnLedOn(6, hours2 & 8);
+
+  turnLedOn(7, minutes1 & 1);
+  turnLedOn(8, minutes1 & 2);
+  turnLedOn(9, minutes1 & 4);
+
+  turnLedOn(10, minutes2 & 1);
+  turnLedOn(11, minutes2 & 2);
+  turnLedOn(12, minutes2 & 4);
+  turnLedOn(14, minutes2 & 8);
+}
+
+void turnLedOn(int i, boolean test) {
+  if (test) plex.enable(i);
 }
 
 boolean connectToWifi() {
