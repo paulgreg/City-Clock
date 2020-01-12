@@ -81,7 +81,7 @@ void turnAllLedsOn() {
   turnLedOn(10, minutes2 & 1);
   turnLedOn(11, minutes2 & 2);
   turnLedOn(12, minutes2 & 4);
-  turnLedOn(14, minutes2 & 8);
+  turnLedOn(13, minutes2 & 8);
 }
 
 
