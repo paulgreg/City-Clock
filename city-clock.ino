@@ -31,6 +31,7 @@ void setup() {
   }
   plex.clear();
 
+  delay(500);
   if (connectToWifi()) {
     timeClient.begin();
   }
@@ -61,6 +62,10 @@ void loop() {
     }
   }
 
+  turnAllLedsOn();
+}
+
+void turnAllLedsOn() {
   turnLedOn(1, hours1 & 1);
   turnLedOn(2, hours1 & 2);
 
@@ -78,6 +83,7 @@ void loop() {
   turnLedOn(12, minutes2 & 4);
   turnLedOn(14, minutes2 & 8);
 }
+
 
 void turnLedOn(int i, boolean test) {
   if (test) plex.enable(i);
