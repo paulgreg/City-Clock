@@ -5,8 +5,6 @@
 #include <WiFiUdp.h>
 #include <ChuckPlex.h> // https://github.com/marcuserronius/ChuckPlex
 
-#define DEBUG true
-
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
 
@@ -16,6 +14,17 @@ int LEDs = 13; // the number of LEDs
 
 ChuckPlex plex = ChuckPlex(pins,pinCount);
 
+int hours1, hours2;
+int minutes1, minutes2;
+
+unsigned int c = 0;
+
+#if DEBUG
+  #define NB_LOOP 10000
+#else     
+  #define NB_LOOP 15000
+#endif    
+
 void setup() {
   Serial.begin(74880);
   while (!Serial);
@@ -23,7 +32,7 @@ void setup() {
 
   if (DEBUG) plex.displayConnections(LEDs);
 
-  for (int i = 1; i < 14; i++) {
+  for (int i = 1; i <= LEDs; i++) {
     Serial.print("Testing LED # ");
     Serial.println(i);
     plex.enable(i);
@@ -35,14 +44,12 @@ void setup() {
   if (connectToWifi()) {
     timeClient.begin();
   }
+  plex.clear();
+  Serial.println("End setup");
 }
 
-unsigned int c = 0;
-unsigned int hours1, hours2;
-unsigned int minutes1, minutes2;  
-
 void loop() {
-  if (c++ % 10000 == 0) {
+  if (c++ % NB_LOOP == 0) {
     timeClient.update();
   
     int hours = timeClient.getHours();
@@ -60,12 +67,11 @@ void loop() {
       Serial.print(":");
       Serial.println(timeClient.getSeconds());
     }
-  }
-
+  } 
   turnAllLedsOn();
 }
 
-void turnAllLedsOn() {
+inline void turnAllLedsOn() {
   turnLedOn(1, hours1 & 1);
   turnLedOn(2, hours1 & 2);
 
@@ -84,14 +90,13 @@ void turnAllLedsOn() {
   turnLedOn(13, minutes2 & 8);
 }
 
-
-void turnLedOn(int i, boolean test) {
+inline void turnLedOn(int i, boolean test) {
   if (test) plex.enable(i);
 }
 
 boolean connectToWifi() {
   if (WiFi.status() == WL_CONNECTED) {
-    Serial.print("\nAlready connected");
+    Serial.println("\nAlready connected");
     return true;
   }
   Serial.print("\nconnecting to ");
@@ -105,7 +110,7 @@ boolean connectToWifi() {
     Serial.print(".");
     plex.clear();
     plex.enable((retries++ % LEDs) + 1);
-    delay(500);
+    delay(800);
   }
   Serial.println("");
   Serial.println("wifi connected");
