@@ -20,9 +20,9 @@ int minutes1, minutes2;
 unsigned int c = 0;
 
 #if DEBUG
-  #define NB_LOOP 10000
-#else     
   #define NB_LOOP 15000
+#else     
+  #define NB_LOOP 20000
 #endif    
 
 void setup() {
@@ -50,6 +50,13 @@ void setup() {
 
 void loop() {
   if (c++ % NB_LOOP == 0) {
+
+    if (WiFi.status() != WL_CONNECTED) {
+      Serial.println("Wifi lost");
+      connectToWifi();
+      timeClient.begin();
+    }
+
     timeClient.update();
   
     int hours = timeClient.getHours();
@@ -95,10 +102,6 @@ inline void turnLedOn(int i, boolean test) {
 }
 
 boolean connectToWifi() {
-  if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("\nAlready connected");
-    return true;
-  }
   Serial.print("\nconnecting to ");
   Serial.println(WIFI_SSID);
 
