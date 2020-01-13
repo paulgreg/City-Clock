@@ -72,22 +72,22 @@ void loop() {
 }
 
 inline void turnAllLedsOn() {
-  turnLedOn(1, hours1 & 1);
-  turnLedOn(2, hours1 & 2);
+  turnLedOn(1, hours1 & 2);
+  turnLedOn(2, hours1 & 1);
 
-  turnLedOn(3, hours2 & 1);
-  turnLedOn(4, hours2 & 2);
-  turnLedOn(5, hours2 & 4);
-  turnLedOn(6, hours2 & 8);
+  turnLedOn(3, hours2 & 8);
+  turnLedOn(4, hours2 & 4);
+  turnLedOn(5, hours2 & 2);
+  turnLedOn(6, hours2 & 1);
 
-  turnLedOn(7, minutes1 & 1);
+  turnLedOn(7, minutes1 & 4);
   turnLedOn(8, minutes1 & 2);
-  turnLedOn(9, minutes1 & 4);
+  turnLedOn(9, minutes1 & 1);
 
-  turnLedOn(10, minutes2 & 1);
-  turnLedOn(11, minutes2 & 2);
-  turnLedOn(12, minutes2 & 4);
-  turnLedOn(13, minutes2 & 8);
+  turnLedOn(10, minutes2 & 8);
+  turnLedOn(11, minutes2 & 4);
+  turnLedOn(12, minutes2 & 2);
+  turnLedOn(13, minutes2 & 1);
 }
 
 inline void turnLedOn(int i, boolean test) {
