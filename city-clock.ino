@@ -26,7 +26,7 @@ unsigned int c = 0;
 #endif    
 
 void setup() {
-  Serial.begin(74880);
+  Serial.begin(115200);
   while (!Serial);
   Serial.println("City Clock");
 
@@ -113,7 +113,7 @@ boolean connectToWifi() {
     Serial.print(".");
     plex.clear();
     plex.enable((retries++ % LEDs) + 1);
-    delay(800);
+    delay(1000);
   }
   Serial.println("");
   Serial.println("wifi connected");
