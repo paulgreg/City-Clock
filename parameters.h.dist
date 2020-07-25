@@ -1,3 +1,5 @@
-#define DEBUG true
+#define TEST_LED false // Mode turning on each led to test them
+#define TIMEZONE +1 // here GMT+1
+#define SUMMERTIME 1 // 1 if summer time, 0 if not
 #define WIFI_SSID  "SSID"
 #define WIFI_PASSWORD "PASSWORD"
