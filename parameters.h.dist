@@ -1,5 +1,11 @@
-#define TEST_LED false // Mode turning on each led to test them
+#define DEBUG_ALL_LED_ON false // Mode turning on all LED (to debug)
+
 #define TIMEZONE +1 // here GMT+1
 #define SUMMERTIME 1 // 1 if summer time, 0 if not
+#define NTP_UPDATE_INTERVAL 60000
+
+#define VERSION 2
+#define UPDATE_URL "http://your-pc.local/"
+
 #define WIFI_SSID  "SSID"
 #define WIFI_PASSWORD "PASSWORD"

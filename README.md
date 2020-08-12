@@ -27,3 +27,23 @@ And, to flash ESP8266 :
 - TX from FTDI to RX on ESP
 - DTR from FTDI to GPIO 0 on ESP
 - RST from FTDI to RESET on ESP
+
+## Update via LAN
+
+You can update the code via wifi.
+When esp8266 is booting, it will check at `UPDATE_URL` for a `version.txt` file which should only contain a number.
+That number is compared with `VERSION` value in parameters.h and, if greater, it will try to download `firmware.VERSION.bin` (where VERSION should be the same as the value in `version.txt`).
+
+To update via wifi, first increment the `VERSION` and generate binary from « Sketch > Export compiled binary » in arduino menu.
+
+Then, create a new directory on your PC, create a `version.txt` file with the same value as `VERSION`. Move the generated .bin file to that directory and rename it `firmware.VERSION.bin` (with same version number).
+
+Then start a web server in that directory, for exemple by using that node server : 
+
+    npx http-server -p 80 .
+
+Please note that you may need to allow node to open port 80 : 
+
+    sudo setcap cap_net_bind_service=+ep `which node`
+
+Reboot the esp8266 and it should connect to `UPDATE_URL`. You can watch at server log to see it it’s connecting.
