@@ -3,6 +3,8 @@
 That project is a « fork » of the [city clock](https://www.instructables.com/id/The-Binary-Clock-the-City-Clock/), a binary clock.
 
 That project uses an ESP8266 instead of an arduino.
+You should use esp8266 2.x.x to flash.
+
 The esp8266 connects to wifi and synchronise time via NTP at boot.
 I’m also using a PCA9685 to control LEDs (I tried Charlieplexing but LEDs were too dim, the ESP8266 isn’t powerfull enought to light them)
 
