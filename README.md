@@ -10,7 +10,10 @@ I’m also using a PCA9685 to control LEDs (I tried Charlieplexing but LEDs were
 
 It uses [NTPClient](https://github.com/arduino-libraries/NTPClient) for NTP and [Adafruit PWM Servo driver library](https://github.com/adafruit/Adafruit-PWM-Servo-Driver-Library/).
 
+It expects a file on `PARAM_URL` containing `SUMMER=0` or `SUMMER=1` to configure summer time.
+
 A nice [page about GPIOs to use](https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/).
+
 
 ## Connections
 
@@ -29,6 +32,7 @@ And, to flash ESP8266 :
 - TX from FTDI to RX on ESP
 - DTR from FTDI to GPIO 0 on ESP
 - RST from FTDI to RESET on ESP
+
 
 ## Update via LAN
 

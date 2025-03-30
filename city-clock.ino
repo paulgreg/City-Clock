@@ -1,5 +1,6 @@
 #include "parameters.h"
 #include <ESP8266WiFi.h>
+#include <WiFiClientSecure.h>
 
 #include <NTPClient.h> // https://github.com/arduino-libraries/NTPClient
 #include <WiFiUdp.h>
@@ -9,7 +10,7 @@
 #include <Adafruit_PWMServoDriver.h>
 
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", (TIMEZONE + SUMMERTIME) * 3600, NTP_UPDATE_INTERVAL);
+NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", TIMEZONE * 3600, NTP_UPDATE_INTERVAL);
 
 unsigned int LEDs = 13; // the number of LEDs
 
@@ -33,6 +34,10 @@ void setup() {
   while (DEBUG_ALL_LED_ON) delay(10000);
 
   checkForUpdate();
+
+  unsigned int summerTime = checkIsSummerTime(PARAM_URL);
+  Serial.print("summerTime: "); Serial.println(summerTime);
+  timeClient.setTimeOffset((TIMEZONE + summerTime) * 3600);
 
   Serial.println("Initializing NTP");
   timeClient.begin();
@@ -139,6 +144,7 @@ void checkForUpdate() {
   Serial.print("\nCheck version at ");
   Serial.println(urlversion);
   HTTPClient httpClient;
+  httpClient.setReuse(true);
   httpClient.begin(urlversion);
   int httpCode = httpClient.GET();
 
@@ -177,4 +183,34 @@ void checkForUpdate() {
     Serial.print("Error while fetching version on server :");
     Serial.println(httpCode);
   }
+}
+
+
+unsigned int checkIsSummerTime(const char* url) {
+  WiFiClientSecure client;
+  client.setInsecure();
+  
+  Serial.print("Connecting to ");
+  Serial.println(url);
+  
+  turnAllLedsOff();
+  HTTPClient httpClient;
+  httpClient.setReuse(true);
+  httpClient.begin(client, url);
+  int httpCode = httpClient.GET();
+  Serial.print("Status code:"); Serial.println(httpCode);
+
+  if(httpCode != HTTP_CODE_OK) {
+    turnLedOn(7);
+    Serial.print("Error on HTTP request : ");
+    Serial.println(httpCode);
+  } else {
+    turnLedOn(8);
+    String s = httpClient.getString();
+    return s.indexOf("SUMMER=1") == 0 ? 1 : 0;
+
+  }
+  httpClient.end();
+
+  return false;
 }
